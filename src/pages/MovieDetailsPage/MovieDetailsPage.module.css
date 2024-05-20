@@ -9,3 +9,7 @@
 .detail {
   padding: 16px;
 }
+
+.genres {
+  list-style-type: none;
+}

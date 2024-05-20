@@ -1,0 +1,11 @@
+.wrapper {
+  display: flex;
+}
+
+.image {
+  width: 200px;
+}
+
+.detail {
+  padding: 16px;
+}

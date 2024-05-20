@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, Outlet, useParams } from "react-router-dom";
+
 import axios from "axios";
+
+import css from "./MovieDetailsPage.module.css";
 
 export default function MovieDetailsPage() {
   const [movieDetails, setMovieDetails] = useState({});
   const { movieId } = useParams();
-  console.log(Object.keys(movieDetails).length);
   useEffect(() => {
     const url = `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`;
 
@@ -25,23 +27,43 @@ export default function MovieDetailsPage() {
   }, [movieId]);
 
   return (
-    <div>
+    <>
       {Object.keys(movieDetails).length !== 0 && (
-        <p>{movieDetails.release_date.slice(0, 4)}</p>
-      )}
-      <div>
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
-          alt=""
-        />
         <div>
-          <h2>{`${movieDetails.title} (${movieDetails.release_date})`}</h2>
-          <h3>Overview</h3>
-          <p>{movieDetails.overview}</p>
-          <h3>Genres</h3>
-          <p></p>
+          <div className={css.wrapper}>
+            <img
+              className={css.image}
+              src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
+              alt=""
+            />
+            <div className={css.detail}>
+              <h2>{`${movieDetails.title} (${movieDetails.release_date.slice(
+                0,
+                4
+              )})`}</h2>
+              <h3>Overview</h3>
+              <p>{movieDetails.overview}</p>
+              <h3>Genres</h3>
+              <ul>
+                {movieDetails.genres.map((item) => (
+                  <li key={item.id}>{item.name}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div>
+            <ul>
+              <li>
+                <Link to="cast">Cast</Link>
+              </li>
+              <li>
+                <Link to="reviews">Reviews</Link>
+              </li>
+            </ul>
+            <Outlet />
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }

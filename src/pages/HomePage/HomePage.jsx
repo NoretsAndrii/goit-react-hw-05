@@ -28,7 +28,6 @@ export default function HomePage() {
 
   return (
     <>
-      <p>Hello</p>
       <MovieList movies={trendingMovies} />
     </>
   );

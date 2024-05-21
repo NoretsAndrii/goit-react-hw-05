@@ -79,7 +79,7 @@ export default function MoviesPage() {
         <p>There is no movies with this request. Please, try again</p>
       )}
       {error && <ErrorMessage />}
-      {movieQuery !== "" && (
+      {searchMovies.length > 0 && (
         <MovieList movies={searchMovies} state={location} />
       )}
       <Toaster

@@ -10,7 +10,7 @@ import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 import css from "./MovieDetailsPage.module.css";
 
 export default function MovieDetailsPage() {
-  const [movieDetails, setMovieDetails] = useState({});
+  const [movieDetails, setMovieDetails] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -43,7 +43,7 @@ export default function MovieDetailsPage() {
     const getImages = async () => {
       try {
         setError(false);
-        setMovieDetails({});
+        setMovieDetails(null);
         setLoading(true);
         const response = await fetchMovies(url);
         setMovieDetails(response.data);
@@ -61,7 +61,7 @@ export default function MovieDetailsPage() {
       <BackLink to={backLinkHref}>Go back</BackLink>
       {loading && <Loader />}
       {error && <ErrorMessage />}
-      {Object.keys(movieDetails).length !== 0 && (
+      {movieDetails && (
         <div>
           <div className={css.wrapper}>
             <img

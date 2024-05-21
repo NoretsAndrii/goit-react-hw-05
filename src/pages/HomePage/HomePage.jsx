@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 // import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 import { fetchMovies } from "../../api";
 
@@ -7,6 +8,8 @@ import MovieList from "../../components/MovieList/MovieList";
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState([]);
+
+  const location = useLocation();
 
   useEffect(() => {
     // const url =
@@ -38,6 +41,11 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>{trendingMovies.length !== 0 && <MovieList movies={trendingMovies} />}</>
+    <>
+      <h2>Trending today</h2>
+      {trendingMovies.length !== 0 && (
+        <MovieList movies={trendingMovies} state={location} />
+      )}
+    </>
   );
 }

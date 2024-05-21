@@ -1,30 +1,36 @@
 import { useState, useEffect } from "react";
+import { useSearchParams, useLocation } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 // import axios from "axios";
 import { fetchMovies } from "../../api";
-
+import SearchForm from "../../components/SearchForm/SearchForm";
 import MovieList from "../../components/MovieList/MovieList";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import Loader from "../../components/Loader/Loader";
 
 export default function MoviesPage() {
-  const [query, setQuery] = useState(() => {
-    const saveQuery = localStorage.getItem("query");
-    if (saveQuery === null) return "";
-    return saveQuery;
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const movieQuery = searchParams.get("movieQuery") ?? "";
   const [searchMovies, setSearchMovies] = useState([]);
+  const [notResult, setNotResult] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.clear("query");
-    const form = e.target;
-    const query = form.elements.input.value.toLowerCase().trim();
-    console.log(query);
-    localStorage.setItem("query", query);
-    setQuery(query);
-    form.reset();
+  const location = useLocation();
+
+  const notify = () => {
+    setError(false);
+    setNotResult(false);
+    toast.error("Enter text to search!!!");
+  };
+
+  const handleSearch = (query) => {
+    setNotResult(false);
+    setSearchParams({ movieQuery: query });
   };
 
   useEffect(() => {
-    if (query === "") return;
+    if (movieQuery === "") return;
     // const url = `https://api.themoviedb.org/3/search/movie?query=${query}&include_adult=false&language=en-US&page=1`;
 
     // const options = {
@@ -45,27 +51,42 @@ export default function MoviesPage() {
 
     const params = {
       include_adult: false,
-      query,
+      query: movieQuery,
     };
 
     const getImages = async () => {
       try {
+        setError(false);
+        setSearchMovies([]);
+        setLoading(true);
         const response = await fetchMovies(url, params);
+        if (response.data.results.length === 0) return setNotResult(true);
         setSearchMovies(response.data.results);
       } catch (error) {
-        console.log(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     getImages();
-  }, [query]);
+  }, [movieQuery]);
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="input" />
-        <button type="submit">Search</button>
-      </form>
-      {query !== "" && <MovieList movies={searchMovies} />}
+      <SearchForm onSearch={handleSearch} notify={notify} />
+      {loading && <Loader />}
+      {notResult && (
+        <p>There is no movies with this request. Please, try again</p>
+      )}
+      {error && <ErrorMessage />}
+      {movieQuery !== "" && (
+        <MovieList movies={searchMovies} state={location} />
+      )}
+      <Toaster
+        containerStyle={{
+          top: 100,
+        }}
+      />
     </div>
   );
 }

@@ -10,6 +10,9 @@ export default function MovieCast() {
   const [noResult, setNoResult] = useState(false);
   const { movieId } = useParams();
 
+  const defaultImg =
+    "https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg";
+
   useEffect(() => {
     // const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`;
 
@@ -30,6 +33,8 @@ export default function MovieCast() {
     //   .catch((err) => {
     //     console.error(err);
     //   });
+    if (!movieId) return;
+
     const url = `/movie/${movieId}/credits`;
 
     const getImages = async () => {
@@ -53,7 +58,11 @@ export default function MovieCast() {
           {movieCast.map((item) => (
             <li className={css.item} key={item.id}>
               <img
-                src={`https://image.tmdb.org/t/p/w500${item.profile_path}`}
+                src={
+                  item.profile_path
+                    ? `https://image.tmdb.org/t/p/w500${item.profile_path}`
+                    : defaultImg
+                }
                 alt={item.name}
                 width="100px"
                 height="150px"

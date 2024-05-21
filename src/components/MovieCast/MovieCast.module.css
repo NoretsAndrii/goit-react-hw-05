@@ -2,16 +2,17 @@
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
+  padding: 8px;
 }
 
 .item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc((100% - 24px) / 4);
-  border: 2px solid black;
+  width: calc((100% - 36px) / 4);
+  box-shadow: 2px 2px 5px 2px rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   padding: 8px;
-  background-color: lightgray;
+  background-color: rgb(249, 242, 242);
 }

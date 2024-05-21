@@ -14,6 +14,9 @@ export default function MovieDetailsPage() {
   const location = useLocation();
   const backLinkHref = location.state ?? "/movies";
 
+  const defaultImg =
+    "https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg";
+
   useEffect(() => {
     // const url = `https://api.themoviedb.org/3/movie/${movieId}?language=en-US`;
     // const options = {
@@ -29,6 +32,8 @@ export default function MovieDetailsPage() {
     //     setMovieDetails(response.data);
     //   })
     //   .catch((err) => console.error(err));
+    if (!movieId) return;
+
     const url = `movie/${movieId}`;
 
     const getImages = async () => {
@@ -50,7 +55,11 @@ export default function MovieDetailsPage() {
           <div className={css.wrapper}>
             <img
               className={css.image}
-              src={`https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`}
+              src={
+                movieDetails.poster_path
+                  ? `https://image.tmdb.org/t/p/w500${movieDetails.poster_path}`
+                  : defaultImg
+              }
               alt=""
             />
             <div className={css.detail}>
@@ -73,10 +82,14 @@ export default function MovieDetailsPage() {
             <p>Additional information</p>
             <ul>
               <li>
-                <Link to="cast">Cast</Link>
+                <Link to="cast" state={backLinkHref}>
+                  Cast
+                </Link>
               </li>
               <li>
-                <Link to="reviews">Reviews</Link>
+                <Link to="reviews" state={backLinkHref}>
+                  Reviews
+                </Link>
               </li>
             </ul>
             <hr />

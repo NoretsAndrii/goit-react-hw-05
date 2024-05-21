@@ -28,6 +28,8 @@ export default function MovieReviews() {
     //   .catch((err) => {
     //     console.error(err);
     //   });
+    if (!movieId) return;
+
     const url = `movie/${movieId}/reviews`;
 
     const getImages = async () => {
@@ -45,7 +47,9 @@ export default function MovieReviews() {
 
   return (
     <>
-      {noResult === true && <p>No info about reviews</p>}
+      {noResult === true && (
+        <p>We do not have any reviews for this movie yet</p>
+      )}
       {movieReviews.length !== 0 && (
         <ul>
           {movieReviews.map((item) => (

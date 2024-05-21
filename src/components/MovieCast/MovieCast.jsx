@@ -2,12 +2,16 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 // import axios from "axios";
 import { fetchMovies } from "../../api";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 import css from "./MovieCast.module.css";
 
 export default function MovieCast() {
   const [movieCast, setMovieCast] = useState([]);
   const [noResult, setNoResult] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { movieId } = useParams();
 
   const defaultImg =
@@ -39,12 +43,17 @@ export default function MovieCast() {
 
     const getImages = async () => {
       try {
+        setError(false);
+        setMovieCast([]);
+        setLoading(true);
         setNoResult(false);
         const response = await fetchMovies(url);
         setMovieCast(response.data.cast);
         if (response.data.cast.length === 0) setNoResult(true);
       } catch (error) {
-        console.log(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     getImages();
@@ -52,6 +61,8 @@ export default function MovieCast() {
 
   return (
     <>
+      {loading && <Loader />}
+      {error && <ErrorMessage />}
       {noResult === true && <p>No info about cast</p>}
       {movieCast.length !== 0 && (
         <ul className={css.list}>

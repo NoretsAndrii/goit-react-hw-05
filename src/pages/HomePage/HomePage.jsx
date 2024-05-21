@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { fetchMovies } from "../../api";
+import Loader from "../../components/Loader/Loader";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 import MovieList from "../../components/MovieList/MovieList";
 
 export default function HomePage() {
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const location = useLocation();
 
@@ -31,10 +35,15 @@ export default function HomePage() {
 
     const getImages = async () => {
       try {
+        setError(false);
+        setTrendingMovies([]);
+        setLoading(true);
         const response = await fetchMovies(url);
         setTrendingMovies(response.data.results);
       } catch (error) {
-        console.log(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     getImages();
@@ -43,6 +52,8 @@ export default function HomePage() {
   return (
     <>
       <h2>Trending today</h2>
+      {loading && <Loader />}
+      {error && <ErrorMessage />}
       {trendingMovies.length !== 0 && (
         <MovieList movies={trendingMovies} state={location} />
       )}

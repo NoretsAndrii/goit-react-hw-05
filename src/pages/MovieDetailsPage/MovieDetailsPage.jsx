@@ -1,14 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 
 // import axios from "axios";
 import { fetchMovies } from "../../api";
 import { BackLink } from "../../components/BackLink/BackLink";
+import Loader from "../../components/Loader/Loader";
+import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
 
 import css from "./MovieDetailsPage.module.css";
 
 export default function MovieDetailsPage() {
   const [movieDetails, setMovieDetails] = useState({});
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { movieId } = useParams();
   const location = useLocation();
@@ -38,10 +42,15 @@ export default function MovieDetailsPage() {
 
     const getImages = async () => {
       try {
+        setError(false);
+        setMovieDetails({});
+        setLoading(true);
         const response = await fetchMovies(url);
         setMovieDetails(response.data);
       } catch (error) {
-        console.log(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     getImages();
@@ -50,6 +59,8 @@ export default function MovieDetailsPage() {
   return (
     <>
       <BackLink to={backLinkHref}>Go back</BackLink>
+      {loading && <Loader />}
+      {error && <ErrorMessage />}
       {Object.keys(movieDetails).length !== 0 && (
         <div>
           <div className={css.wrapper}>
@@ -93,7 +104,9 @@ export default function MovieDetailsPage() {
               </li>
             </ul>
             <hr />
-            <Outlet />
+            <Suspense fallback={<Loader />}>
+              <Outlet />
+            </Suspense>
           </div>
         </div>
       )}

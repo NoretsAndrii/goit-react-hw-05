@@ -25,7 +25,6 @@ export default function MoviesPage() {
   };
 
   const handleSearch = (query) => {
-    setNotResult(false);
     setSearchParams({ movieQuery: query });
   };
 
@@ -56,6 +55,7 @@ export default function MoviesPage() {
 
     const getImages = async () => {
       try {
+        setNotResult(false);
         setError(false);
         setSearchMovies([]);
         setLoading(true);

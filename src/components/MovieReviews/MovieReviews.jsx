@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 // import axios from "axios";
 import { fetchMovies } from "../../api";
+import Loader from "../Loader/Loader";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
 
 export default function MovieReviews() {
   const [movieReviews, setMovieReviews] = useState([]);
   const [noResult, setNoResult] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { movieId } = useParams();
 
   useEffect(() => {
@@ -34,12 +38,17 @@ export default function MovieReviews() {
 
     const getImages = async () => {
       try {
+        setError(false);
+        setMovieReviews([]);
+        setLoading(true);
         setNoResult(false);
         const response = await fetchMovies(url);
         setMovieReviews(response.data.results);
         if (response.data.results.length === 0) setNoResult(true);
       } catch (error) {
-        console.log(error);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
     getImages();
@@ -47,6 +56,8 @@ export default function MovieReviews() {
 
   return (
     <>
+      {loading && <Loader />}
+      {error && <ErrorMessage />}
       {noResult === true && (
         <p>We do not have any reviews for this movie yet</p>
       )}

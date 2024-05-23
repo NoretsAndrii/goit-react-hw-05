@@ -10,7 +10,6 @@ import Loader from "../../components/Loader/Loader";
 
 export default function MoviesPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const movieQuery = searchParams.get("movieQuery") ?? "";
   const [searchMovies, setSearchMovies] = useState([]);
   const [notResult, setNotResult] = useState(false);
   const [error, setError] = useState(false);
@@ -25,8 +24,10 @@ export default function MoviesPage() {
   };
 
   const handleSearch = (query) => {
-    setSearchParams({ movieQuery: query });
+    setSearchParams({ query: query });
   };
+
+  const movieQuery = searchParams.get("query") ?? "";
 
   useEffect(() => {
     if (movieQuery === "") return;

@@ -1,4 +1,4 @@
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import { Link, Outlet, useParams, useLocation } from "react-router-dom";
 
 // import axios from "axios";
@@ -16,7 +16,7 @@ export default function MovieDetailsPage() {
 
   const { movieId } = useParams();
   const location = useLocation();
-  const backLinkHref = location.state ?? "/movies";
+  const backLinkHref = useRef(location.state ?? "/movies");
 
   const defaultImg =
     "https://dl-media.viber.com/10/share/2/long/vibes/icon/image/0x0/95e0/5688fdffb84ff8bed4240bcf3ec5ac81ce591d9fa9558a3a968c630eaba195e0.jpg";
@@ -58,7 +58,7 @@ export default function MovieDetailsPage() {
 
   return (
     <>
-      <BackLink to={backLinkHref}>Go back</BackLink>
+      <BackLink to={backLinkHref.current}>Go back</BackLink>
       {loading && <Loader />}
       {error && <ErrorMessage />}
       {movieDetails && (
@@ -93,14 +93,10 @@ export default function MovieDetailsPage() {
             <p>Additional information</p>
             <ul>
               <li>
-                <Link to="cast" state={backLinkHref}>
-                  Cast
-                </Link>
+                <Link to="cast">Cast</Link>
               </li>
               <li>
-                <Link to="reviews" state={backLinkHref}>
-                  Reviews
-                </Link>
+                <Link to="reviews">Reviews</Link>
               </li>
             </ul>
             <hr />

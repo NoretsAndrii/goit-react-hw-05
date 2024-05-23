@@ -20,6 +20,7 @@ export default function MoviesPage() {
   const notify = () => {
     setError(false);
     setNotResult(false);
+    setSearchMovies([]);
     toast.error("Enter text to search!!!");
   };
 
